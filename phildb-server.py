@@ -12,7 +12,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-from tsdb.database import TSDB
+from phildb.database import PhilDB
 
 class MainHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -117,19 +117,19 @@ class PlotHandler(tornado.web.RequestHandler):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run tsdb server instance.')
-    parser.add_argument('TSDB', type=str,
-                        help='TSDB to run the server for.')
+    parser.add_argument('PhilDB', type=str,
+                        help='PhilDB to run the server for.')
     parser.add_argument('--processes', type=str,
                         default = 0,
                         help='Number of processes to run, defaults to zero which means use all available CPUs.')
     parser.add_argument('--debug',
                         action='store_true',
-                        help='TSDB to run the server for.')
+                        help='PhilDB to run the server for.')
 
     args = parser.parse_args()
     num_processes = args.processes
 
-    db_dict = dict(db = TSDB(args.TSDB))
+    db_dict = dict(db = PhilDB(args.PhilDB))
     application = tornado.web.Application([
             (r"/", MainHandler, db_dict),
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
