@@ -167,6 +167,7 @@ if __name__ == "__main__":
     db_dict = dict(db = PhilDB(args.PhilDB))
     application = tornado.web.Application([
             (r"/", MainHandler, db_dict),
+            (r"/favicon.ico", MainHandler, db_dict),
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
             (r"/ts_list\.(json|csv)", TSListHandler, db_dict),
             (r"/(.+)/(.+)\.(json|csv)", ReadHandler, db_dict),
