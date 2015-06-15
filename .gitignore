@@ -1,0 +1,10 @@
+*DS_Store
+phildb_server.egg-info/
+*.pyc
+.coverage
+coverage.xml
+cover
+nosetests.xml
+*.swp
+doc/build/
+doc/source/api/
