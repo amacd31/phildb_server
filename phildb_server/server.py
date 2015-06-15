@@ -6,6 +6,9 @@ import tornado.web
 
 import StringIO
 
+import csv
+import json
+import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 
@@ -25,6 +28,38 @@ class MainHandler(tornado.web.RequestHandler):
         output += "</ul>"
 
         self.write(output)
+
+class TSListHandler(tornado.web.RequestHandler):
+    def initialize(self, db):
+        self.db = db
+
+    def get(self, ftype):
+
+        kwargs = {}
+        for kwarg in ['source', 'measurand']:
+            kwargs[kwarg] = self.get_argument(kwarg, None)
+
+        callback = self.get_argument('callback', None)
+
+        ts_list = self.db.ts_list(**kwargs)
+
+        if ftype == 'json':
+            json_data = json.dumps(ts_list)
+            if callback:
+                json_data = "{0}({1});".format(callback, json_data)
+                self.set_header("Content-type",  "application/javascript")
+            else:
+                self.set_header("Content-type",  "application/json")
+
+            self.write(json_data)
+
+        elif ftype == 'csv':
+            csv_output = StringIO.StringIO()
+            for ts_id in ts_list:
+                csv_output.write(ts_id)
+                csv_output.write('\n')
+            self.set_header("Content-type",  "text/csv")
+            self.write(csv_output.getvalue())
 
 class TimeseriesHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -133,6 +168,7 @@ if __name__ == "__main__":
     application = tornado.web.Application([
             (r"/", MainHandler, db_dict),
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
+            (r"/ts_list\.(json|csv)", TSListHandler, db_dict),
             (r"/(.+)/(.+)\.(json|csv)", ReadHandler, db_dict),
             (r"/(.+)\.(json|csv)?", TimeseriesHandler, db_dict),
             (r"/(.+)", TimeseriesHandler, db_dict),
