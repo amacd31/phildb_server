@@ -29,11 +29,11 @@ class MainHandler(tornado.web.RequestHandler):
 
         self.write(output)
 
-class TSListHandler(tornado.web.RequestHandler):
+class ListHandler(tornado.web.RequestHandler):
     def initialize(self, db):
         self.db = db
 
-    def get(self, ftype):
+    def get(self, list_type, ftype):
 
         kwargs = {}
         for kwarg in ['source', 'measurand']:
@@ -41,10 +41,15 @@ class TSListHandler(tornado.web.RequestHandler):
 
         callback = self.get_argument('callback', None)
 
-        ts_list = self.db.ts_list(**kwargs)
+        if list_type == 'timeseries':
+            _list = self.db.ts_list(**kwargs)
+        elif list_type == 'sources':
+            _list = self.db.list_sources()
+        elif list_type == 'measurands':
+            _list = self.db.list_measurands()
 
         if ftype == 'json':
-            json_data = json.dumps(ts_list)
+            json_data = json.dumps(_list)
             if callback:
                 json_data = "{0}({1});".format(callback, json_data)
                 self.set_header("Content-type",  "application/javascript")
@@ -55,7 +60,7 @@ class TSListHandler(tornado.web.RequestHandler):
 
         elif ftype == 'csv':
             csv_output = StringIO.StringIO()
-            for ts_id in ts_list:
+            for ts_id in _list:
                 csv_output.write(ts_id)
                 csv_output.write('\n')
             self.set_header("Content-type",  "text/csv")
@@ -169,7 +174,7 @@ if __name__ == "__main__":
             (r"/", MainHandler, db_dict),
             (r"/favicon.ico", MainHandler, db_dict),
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
-            (r"/ts_list\.(json|csv)", TSListHandler, db_dict),
+            (r"/list/(.+)\.(json|csv)", ListHandler, db_dict),
             (r"/(.+)/(.+)\.(json|csv)", ReadHandler, db_dict),
             (r"/(.+)\.(json|csv)?", TimeseriesHandler, db_dict),
             (r"/(.+)", TimeseriesHandler, db_dict),
