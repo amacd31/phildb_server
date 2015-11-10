@@ -24,7 +24,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         output = "<ul>"
         for ts in self.db.ts_list():
-            output += '<li><a href="{0}">{0}<a></li>'.format(ts)
+            output += '<li><a href="/{0}">{0}<a></li>'.format(ts)
         output += "</ul>"
 
         self.write(output)
