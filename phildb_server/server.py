@@ -191,6 +191,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run tsdb server instance.')
     parser.add_argument('PhilDB', type=str,
                         help='PhilDB to run the server for.')
+    parser.add_argument('--port', type=str,
+                        default = 8888,
+                        help='Set port to run the server on. Default: 8888')
     parser.add_argument('--processes', type=str,
                         default = 0,
                         help='Number of processes to run, defaults to zero which means use all available CPUs.')
@@ -221,6 +224,6 @@ if __name__ == "__main__":
         num_processes = 1
 
     server = tornado.httpserver.HTTPServer(application)
-    server.bind(8888)
+    server.bind(args.port)
     server.start(num_processes)
     tornado.ioloop.IOLoop.current().start()
