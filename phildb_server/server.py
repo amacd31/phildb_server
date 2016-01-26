@@ -4,7 +4,10 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
-import StringIO
+try:
+    from io import StringIO
+except ImportError:
+    from cStringIO import StringIO
 
 import csv
 import json
