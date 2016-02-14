@@ -60,7 +60,6 @@ class ListHandler(tornado.web.RequestHandler):
                 self.set_header("Content-type",  "application/json")
 
             self.write(json_data)
-
         elif ftype == 'csv':
             csv_output = StringIO.StringIO()
             for ts_id in _list:
@@ -93,6 +92,10 @@ class TimeseriesInstanceHandler(tornado.web.RequestHandler):
 
             self.write(json_data)
 
+        elif ftype == 'msgpack':
+            msg_data = _list.to_msgpack(orient = 'records')
+            self.write(msg_data)
+
         elif ftype == 'csv':
             csv_output = StringIO.StringIO()
             for row in _list.iterrows():
@@ -119,6 +122,11 @@ class TimeseriesHandler(tornado.web.RequestHandler):
                 self.set_header("Content-type",  "application/json")
 
             self.write(json_data)
+            return
+
+        elif ftype == 'msgpack':
+            msg_data = instances.to_msgpack()
+            self.write(msg_data)
             return
 
         elif ftype == 'csv':
@@ -159,6 +167,12 @@ class ReadHandler(tornado.web.RequestHandler):
                 self.set_header("Content-type",  "application/json")
 
             self.write(json_data)
+
+        elif ftype == 'msgpack':
+            msg_data = data.to_msgpack()
+            self.write(msg_data)
+            return
+
 
         elif ftype == 'csv':
             csv_output = StringIO.StringIO()
@@ -212,10 +226,10 @@ if __name__ == "__main__":
             (r"/", MainHandler, db_dict),
             (r"/favicon.ico", MainHandler, db_dict),
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
-            (r"/list/timeseries_instances\.(json|csv)", TimeseriesInstanceHandler, db_dict),
-            (r"/list/(.+)\.(json|csv)", ListHandler, db_dict),
-            (r"/(.+)/(.+)\.(json|csv)", ReadHandler, db_dict),
-            (r"/(.+)\.(json|csv)?", TimeseriesHandler, db_dict),
+            (r"/list/timeseries_instances\.(json|csv|msgpack)", TimeseriesInstanceHandler, db_dict),
+            (r"/list/(.+)\.(json|csv|msgpack)", ListHandler, db_dict),
+            (r"/(.+)/(.+)\.(json|csv|msgpack)", ReadHandler, db_dict),
+            (r"/(.+)\.(json|csv|msgpack)?", TimeseriesHandler, db_dict),
             (r"/(.+)", TimeseriesHandler, db_dict),
         ],
         compress_response = True,
