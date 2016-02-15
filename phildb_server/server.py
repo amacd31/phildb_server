@@ -19,6 +19,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
+import logging
+logger = logging.getLogger(__name__)
+
 from phildb.database import PhilDB
 
 class MainHandler(tornado.web.RequestHandler):
@@ -52,6 +55,7 @@ class ListHandler(tornado.web.RequestHandler):
         elif list_type == 'measurands':
             _list = self.db.list_measurands()
 
+        logger.debug(_list)
         if ftype == 'json':
             json_data = json.dumps(_list)
             if callback:
@@ -215,6 +219,9 @@ class PlotHandler(tornado.web.RequestHandler):
         self.set_header("Content-type",  "image/png")
 
 if __name__ == "__main__":
+    logging.basicConfig(format = "%(asctime)s:%(levelname)s:%(message)s")
+    logger.setLevel(logging.INFO)
+
     parser = argparse.ArgumentParser(description='Run tsdb server instance.')
     parser.add_argument('PhilDB', type=str,
                         help='PhilDB to run the server for.')
@@ -250,6 +257,10 @@ if __name__ == "__main__":
         # Can only have a single process when running tornado in debug mode.
         num_processes = 1
 
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Running debug mode with a single process.")
+
+    logger.info("Starting PhilDB server on port {0}".format(args.port))
     server = tornado.httpserver.HTTPServer(application)
     server.bind(args.port)
     server.start(num_processes)
