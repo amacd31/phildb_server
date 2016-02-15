@@ -218,7 +218,7 @@ class PlotHandler(tornado.web.RequestHandler):
         self.write(png_output.getvalue())
         self.set_header("Content-type",  "image/png")
 
-if __name__ == "__main__":
+def main():
     logging.basicConfig(format = "%(asctime)s:%(levelname)s:%(message)s")
     logger.setLevel(logging.INFO)
 
@@ -265,3 +265,6 @@ if __name__ == "__main__":
     server.bind(args.port)
     server.start(num_processes)
     tornado.ioloop.IOLoop.current().start()
+
+if __name__ == "__main__":
+    main()

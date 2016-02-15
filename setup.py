@@ -23,9 +23,11 @@ setup(
     install_requires=requirements,
     packages = ['phildb_server'],
     test_suite = 'tests',
-    scripts=[
-        'bin/phildb-server',
-    ],
+    entry_points = {
+        'console_scripts': [
+            'phildb-server = phildb_server.server:main',
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
