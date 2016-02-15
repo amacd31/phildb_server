@@ -14,6 +14,7 @@ import json
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+import pandas as pd
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -67,6 +68,9 @@ class ListHandler(tornado.web.RequestHandler):
                 csv_output.write('\n')
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
+        elif ftype == 'msgpack':
+            msg_data = pd.Series(_list).to_msgpack()
+            self.write(msg_data)
         else:
             raise NotImplementedError("Unsupported format {0}".format(ftype))
 
