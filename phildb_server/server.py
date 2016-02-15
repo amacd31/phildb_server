@@ -5,9 +5,9 @@ import tornado.ioloop
 import tornado.web
 
 try:
-    from io import StringIO
-except ImportError:
     from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import csv
 import json
@@ -66,7 +66,7 @@ class ListHandler(tornado.web.RequestHandler):
 
             self.write(json_data)
         elif ftype == 'csv':
-            csv_output = StringIO.StringIO()
+            csv_output = StringIO()
             for ts_id in _list:
                 csv_output.write(ts_id)
                 csv_output.write('\n')
@@ -107,7 +107,7 @@ class TimeseriesInstanceHandler(tornado.web.RequestHandler):
             self.write(msg_data)
 
         elif ftype == 'csv':
-            csv_output = StringIO.StringIO()
+            csv_output = StringIO()
             for row in _list.iterrows():
                 csv_output.write(','.join(row[1].values))
                 csv_output.write('\n')
@@ -142,7 +142,7 @@ class TimeseriesHandler(tornado.web.RequestHandler):
             return
 
         elif ftype == 'csv':
-            csv_output = StringIO.StringIO()
+            csv_output = StringIO()
             instances.to_csv(csv_output)
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
@@ -187,7 +187,7 @@ class ReadHandler(tornado.web.RequestHandler):
 
 
         elif ftype == 'csv':
-            csv_output = StringIO.StringIO()
+            csv_output = StringIO()
             data.to_csv(csv_output)
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
@@ -213,7 +213,7 @@ class PlotHandler(tornado.web.RequestHandler):
 
         canvas = FigureCanvas(fig)
 
-        png_output = StringIO.StringIO()
+        png_output = StringIO()
         canvas.print_png(png_output)
         self.write(png_output.getvalue())
         self.set_header("Content-type",  "image/png")
