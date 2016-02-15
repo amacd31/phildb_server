@@ -67,6 +67,8 @@ class ListHandler(tornado.web.RequestHandler):
                 csv_output.write('\n')
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
+        else:
+            raise NotImplementedError("Unsupported format {0}".format(ftype))
 
 class TimeseriesInstanceHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -103,6 +105,8 @@ class TimeseriesInstanceHandler(tornado.web.RequestHandler):
                 csv_output.write('\n')
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
+        else:
+            raise NotImplementedError("Unsupported format {0}".format(ftype))
 
 class TimeseriesHandler(tornado.web.RequestHandler):
     def initialize(self, db):
@@ -179,6 +183,8 @@ class ReadHandler(tornado.web.RequestHandler):
             data.to_csv(csv_output)
             self.set_header("Content-type",  "text/csv")
             self.write(csv_output.getvalue())
+        else:
+            raise NotImplementedError("Unsupported format {0}".format(ftype))
 
 class PlotHandler(tornado.web.RequestHandler):
     def initialize(self, db):
