@@ -8,6 +8,7 @@ from setuptools import setup
 requirements = [
     "phildb",
     "tornado",
+    "pandas>=0.17.1",
 ]
 
 setup(
