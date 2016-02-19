@@ -156,6 +156,42 @@ class TimeseriesHandler(tornado.web.RequestHandler):
 
             self.write(output)
 
+class ReadAllHandler(tornado.web.RequestHandler):
+    def initialize(self, db):
+        self.db = db
+
+    def get(self, freq, ftype):
+
+        kwargs = {}
+        for kwarg in ['source', 'measurand']:
+            kwargs[kwarg] = self.get_argument(kwarg, None)
+
+        callback = self.get_argument('callback', None)
+
+        data = self.db.read_all(freq, **kwargs)
+
+        if ftype == 'json':
+            json_data = data.to_json(date_format='iso')
+            if callback:
+                json_data = "{0}({1});".format(callback, json_data)
+                self.set_header("Content-type",  "application/javascript")
+            else:
+                self.set_header("Content-type",  "application/json")
+
+            self.write(json_data)
+
+        elif ftype == 'msgpack':
+            msg_data = data.to_msgpack()
+            self.write(msg_data)
+
+        elif ftype == 'csv':
+            csv_output = StringIO()
+            data.to_csv(csv_output)
+            self.set_header("Content-type",  "text/csv")
+            self.write(csv_output.getvalue())
+        else:
+            raise NotImplementedError("Unsupported format {0}".format(ftype))
+
 class ReadHandler(tornado.web.RequestHandler):
     def initialize(self, db):
         self.db = db
@@ -245,6 +281,7 @@ def main():
             (r"/plot/(.+)/(.+)", PlotHandler, db_dict),
             (r"/list/timeseries_instances\.(json|csv|msgpack)", TimeseriesInstanceHandler, db_dict),
             (r"/list/(.+)\.(json|csv|msgpack)", ListHandler, db_dict),
+            (r"/read_all/(.+)\.(json|csv|msgpack)", ReadAllHandler, db_dict),
             (r"/(.+)/(.+)\.(json|csv|msgpack)", ReadHandler, db_dict),
             (r"/(.+)\.(json|csv|msgpack)?", TimeseriesHandler, db_dict),
             (r"/(.+)", TimeseriesHandler, db_dict),
