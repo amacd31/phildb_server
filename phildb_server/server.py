@@ -162,12 +162,17 @@ class ReadAllHandler(tornado.web.RequestHandler):
 
     def get(self, freq, ftype):
 
+        logger.debug("Called ReadAllHandler.get()")
+
         kwargs = {}
         for kwarg in ['source', 'measurand']:
             kwargs[kwarg] = self.get_argument(kwarg, None)
 
+        kwargs['excludes'] = self.get_query_arguments('excludes')
+
         callback = self.get_argument('callback', None)
 
+        logger.debug(kwargs)
         data = self.db.read_all(freq, **kwargs)
 
         if ftype == 'json':
