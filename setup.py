@@ -5,6 +5,10 @@ import versioneer
 
 from setuptools import setup
 
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
 requirements = [
     "phildb",
     "tornado",
@@ -16,6 +20,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='PhilDB timeseries database server',
+    long_description=long_description,
     author='Andrew MacDonald',
     author_email='andrew@maccas.net',
     license='BSD',
