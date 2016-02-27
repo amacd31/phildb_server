@@ -3,7 +3,8 @@ PhilDB Server
 
 |PYPI Version| |PYPI Python versions| |PYPI License|
 
-PhilDB server, for HTTP access to a `PhilDB<https://github.com/amacd31/phildb>` instance.
+PhilDB server, for HTTP access to a `PhilDB
+<https://github.com/amacd31/phildb>`_ instance.
 
 Dependencies
 ------------
