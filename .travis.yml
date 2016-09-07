@@ -13,5 +13,7 @@ install:
   - conda config --add channels http://conda.anaconda.org/amacd31
   - conda build --python=$TRAVIS_PYTHON_VERSION conda.recipe
   - conda install -y --use-local phildb_server
+script:
+  - phildb-server --version
 after_success:
   - anaconda --token $CONDA_TOKEN upload `python ci/get_labels.py` `conda build --python=$TRAVIS_PYTHON_VERSION conda.recipe --output`
