@@ -1,0 +1,22 @@
+package:
+    name: "phildb_server"
+    version: {{ environ['GIT_DESCRIBE_TAG'][1:] }}
+build:
+    noarch_python: True
+    number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+source:
+  git_url: ../
+requirements:
+    build:
+        - python
+        - phildb
+        - tornado
+        - pandas >=0.17.1
+    run:
+        - python
+        - phildb
+        - tornado
+        - pandas >=0.17.1
+test:
+    imports:
+        - phildb_server

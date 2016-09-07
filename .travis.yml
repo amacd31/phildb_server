@@ -1,0 +1,17 @@
+language: python
+python:
+    - "2.7"
+# Work around travis ci shallow clone not working with conda build
+git:
+  depth: 99999
+sudo: false
+env:
+  global:
+    - secure: "oWFrkhUfsb7uUU89CvJxNvECUx/YXcpQgB5JiIgKVGgfjRAAQuwlLPsG9clxxeOw1bX82+vfHKsoIreb7CsclF1WehdvdNocoN3OOgPQzkS7X03gceJQOW+RrXUCnTM9hg9wJhybM/BpdjIcH/ASMlClKrdFO3UxIBLE4DzFdDxMRzIU0h+bOsAiT3NfdW6oECMQQZZogj59pyraALRIeWkM11GSMS0UoQRZTDTT2k7s3zkYIaxjs27gXuCaFdhxRth2YmGNhsi2Vimr3x4YFaqn4RhB3KVxCWHGFlYCeRBPv+2HTGNXdS1SM5MLrUP71l+zQ1+AmXAhRadS8T42/4l7Ok4JwpMm5aVaXxTlqhdP3WSFhRlY8NqYzfabsrAnZgEizI5odoJX8CLRQGfNqR58+C0V4trwmOwFPiihhiraWz5N9q67Q4MWUoGwMUXnMOuUtFvOjy/NiwzymNzx+mb3FkAfdME4Yc0n7kkDGaB2UrfCWIVHfAVxQeZh2nR4Sx+qhcOpjSd0OZpEUDB23576hHSMsB0Rg8eAbiu58G8MRMSCJQdzB92YtRpXHX6XFHwTsW8vbXass1TZuSLg9Uk1+zhYnCdBb2N7Pb3mxyQo0V5SgYXc35pR43TFU1rhTrqzf0AKoprKT/6AQgYisaFsLlNbTPJnBHRQ8hL6j2E="
+install:
+  - source ci/travis/install.sh
+  - conda config --add channels http://conda.anaconda.org/amacd31
+  - conda build --python=$TRAVIS_PYTHON_VERSION conda.recipe
+  - conda install -y --use-local phildb_server
+after_success:
+  - anaconda --token $CONDA_TOKEN upload `python ci/get_labels.py` `conda build --python=$TRAVIS_PYTHON_VERSION conda.recipe --output`
