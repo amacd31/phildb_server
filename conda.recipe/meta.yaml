@@ -17,6 +17,7 @@ requirements:
         - phildb
         - tornado
         - pandas >=0.17.1
+        - matplotlib
 test:
     imports:
         - phildb_server

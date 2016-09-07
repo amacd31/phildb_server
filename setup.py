@@ -13,6 +13,7 @@ requirements = [
     "phildb",
     "tornado",
     "pandas>=0.17.1",
+    "matplotlib",
 ]
 
 setup(
