@@ -24,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 from phildb.database import PhilDB
 
+from phildb_server import __version__
+
 class MainHandler(tornado.web.RequestHandler):
     def initialize(self, db):
         self.db = db
@@ -275,9 +277,14 @@ def main():
     parser.add_argument('--debug',
                         action='store_true',
                         help='PhilDB to run the server for.')
+    parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
 
     args = parser.parse_args()
     num_processes = args.processes
+
+    if args.version:
+        print(__version__)
+        exit()
 
     db_dict = dict(db = PhilDB(args.PhilDB))
     application = tornado.web.Application([
